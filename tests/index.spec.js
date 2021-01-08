@@ -137,6 +137,53 @@ describe('InnerImageZoom', () => {
           done();
         }
       });
+
+      it('should not trigger zoomIn on click if disableClick is true', (done) => {
+        const afterZoomIn = createSpy();
+        const component = innerImageZoom({ disableClick: true, afterZoomIn });
+        const figure = findRenderedDOMComponentWithTag(component, 'figure');
+
+        Simulate.touchStart(figure);
+        Simulate.mouseEnter(figure);
+        Simulate.click(figure, { pageX: 100, pageY: 100 });
+
+        try {
+          const zoomImg = findRenderedDOMComponentWithClass(component, 'iiz__zoom-img');
+
+          zoomImg.onload = () => {
+            expect(afterZoomIn).toNotHaveBeenCalled();
+            afterZoomIn.restore();
+            done();
+          }
+        } catch (e) {
+          expect(afterZoomIn).toNotHaveBeenCalled();
+            afterZoomIn.restore();
+            done();
+        }
+      });
+
+      it('should trigger zoomIn on zoomType hover even if disableClick is true', (done) => {
+        const afterZoomIn = createSpy();
+        const component = innerImageZoom({ zoomType: 'hover', disableClick: true, afterZoomIn });
+        const figure = findRenderedDOMComponentWithTag(component, 'figure');
+
+        Simulate.mouseEnter(figure);
+        Simulate.click(figure, { pageX: 100, pageY: 100 });
+
+        try {
+          const zoomImg = findRenderedDOMComponentWithClass(component, 'iiz__zoom-img');
+
+          zoomImg.onload = () => {
+            expect(afterZoomIn).toHaveBeenCalled();
+            afterZoomIn.restore();
+            done();
+          }
+        } catch (e) {
+          expect(afterZoomIn).toHaveBeenCalled();
+            afterZoomIn.restore();
+            done();
+        }
+      });
     });
   });
 

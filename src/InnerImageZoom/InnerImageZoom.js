@@ -28,7 +28,7 @@ class InnerImageZoom extends Component {
     });
 
     if (this.props.zoomType === 'hover' && !this.state.isZoomed) {
-      this.handleClick(e);
+      this.handleZoom(e);
     }
   }
 
@@ -42,7 +42,7 @@ class InnerImageZoom extends Component {
     });
   }
 
-  handleClick = (e) => {
+  handleZoom = (e) => {
     if (this.state.isZoomed) {
       if (!this.state.isTouch && !this.state.isDragging) {
         this.zoomOut();
@@ -62,6 +62,14 @@ class InnerImageZoom extends Component {
     } else {
       this.onLoadCallback = this.zoomIn.bind(this, e.pageX, e.pageY);
     }
+  }
+
+  handleClick = (e) => {
+    if (this.props.disableClick) {
+      return;
+    }
+
+    this.handleZoom(e);
   }
 
   handleLoad = (e) => {
@@ -321,7 +329,8 @@ InnerImageZoom.propTypes = {
   className: PropTypes.string,
   afterZoomIn: PropTypes.func,
   afterZoomOut: PropTypes.func,
-  startsActive: PropTypes.bool
+  startsActive: PropTypes.bool,
+  disableClick: PropTypes.bool
 };
 
 InnerImageZoom.defaultProps = {
